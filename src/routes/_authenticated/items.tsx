@@ -14,6 +14,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { PageHeader } from "@/components/StatCard";
 import { itemsQuery, type Item } from "@/lib/queries";
 import { formatTZS, stockStatus } from "@/lib/reports";
+import { CATEGORIES } from "@/lib/categories";
+
+const selectCls = "h-9 rounded-md border border-input bg-background px-3 text-sm";
 
 export const Route = createFileRoute("/_authenticated/items")({
   head: () => ({ meta: [{ title: "Stock — Spares Desk" }, { name: "description", content: "Manage parts, prices and stock levels." }] }),
@@ -28,16 +31,18 @@ function Items() {
   const { data: items } = useSuspenseQuery(itemsQuery);
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState<"all" | "low" | "unpriced">("all");
+  const [category, setCategory] = useState("");
   const [editing, setEditing] = useState<Draft | null>(null);
 
   const rows = useMemo(() => {
     const s = q.toLowerCase();
     return items.filter(
       (i) =>
+        (!category || (i.category ?? "Other Spares") === category) &&
         (!s || i.name.toLowerCase().includes(s) || i.sku?.toLowerCase().includes(s)) &&
         (filter === "all" || (filter === "low" ? stockStatus(i) !== "ok" : Number(i.unit_price) === 0)),
     );
-  }, [items, q, filter]);
+  }, [items, q, filter, category]);
   const value = items.reduce((s, i) => s + i.quantity * Number(i.cost_price), 0);
 
   return (
@@ -53,6 +58,12 @@ function Items() {
             <Search className="absolute left-3 top-2.5 size-4 text-muted-foreground" />
             <Input className="pl-9" placeholder="Search…" value={q} onChange={(e) => setQ(e.target.value)} />
           </div>
+          <select className={selectCls} value={category} onChange={(e) => setCategory(e.target.value)} aria-label="Category">
+            <option value="">All categories</option>
+            {CATEGORIES.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
           {(["all", "low", "unpriced"] as const).map((f) => (
             <Button key={f} variant={filter === f ? "default" : "outline"} size="sm" className="h-9" onClick={() => setFilter(f)}>
               {f === "all" ? "All" : f === "low" ? "Low stock" : "No price"}
@@ -64,6 +75,7 @@ function Items() {
             <TableHeader>
               <TableRow>
                 <TableHead>Part</TableHead>
+                <TableHead>Category</TableHead>
                 <TableHead>Code</TableHead>
                 <TableHead className="text-right">In stock</TableHead>
                 <TableHead className="text-right">Cost</TableHead>
@@ -76,6 +88,7 @@ function Items() {
                 return (
                   <TableRow key={i.id} className="cursor-pointer" onClick={() => setEditing(i)}>
                     <TableCell className="font-medium">{i.name}</TableCell>
+                    <TableCell className="text-xs text-muted-foreground">{i.category ?? "Other Spares"}</TableCell>
                     <TableCell className="num text-xs text-muted-foreground">{i.sku}</TableCell>
                     <TableCell className="text-right">
                       <Badge variant={st === "out" ? "destructive" : st === "low" ? "secondary" : "outline"} className="num">{i.quantity}</Badge>
@@ -105,6 +118,7 @@ function EditDialog({ draft, onClose }: { draft: Draft; onClose: () => void }) {
     const payload = {
       name: d.name,
       sku: d.sku || null,
+      category: d.category || "Other Spares",
       location: d.location || null,
       description: d.description || null,
       quantity: Number(d.quantity ?? 0) + Number(restock || 0),
@@ -133,6 +147,14 @@ function EditDialog({ draft, onClose }: { draft: Draft; onClose: () => void }) {
         <DialogHeader><DialogTitle>{d.id ? "Edit part" : "Add part"}</DialogTitle></DialogHeader>
         <div className="space-y-3">
           <div className="space-y-1"><Label>Name</Label><Input value={d.name} onChange={(e) => set("name", e.target.value)} /></div>
+          <div className="space-y-1">
+            <Label>Category</Label>
+            <select className={`${selectCls} w-full`} value={d.category ?? "Other Spares"} onChange={(e) => set("category", e.target.value)}>
+              {CATEGORIES.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+          </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1"><Label>Code</Label><Input value={d.sku ?? ""} onChange={(e) => set("sku", e.target.value)} /></div>
             <div className="space-y-1"><Label>Shelf / location</Label><Input value={d.location ?? ""} onChange={(e) => set("location", e.target.value)} /></div>

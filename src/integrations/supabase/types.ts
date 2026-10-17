@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       spares_items: {
         Row: {
+          category: string | null
           cost_price: number
           created_at: string
           description: string | null
@@ -29,6 +30,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          category?: string | null
           cost_price?: number
           created_at?: string
           description?: string | null
@@ -42,6 +44,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          category?: string | null
           cost_price?: number
           created_at?: string
           description?: string | null

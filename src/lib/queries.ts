@@ -8,6 +8,7 @@ export type Item = {
   sku: string | null;
   description: string | null;
   location: string | null;
+  category: string | null;
   quantity: number;
   min_quantity: number;
   unit_price: number;
