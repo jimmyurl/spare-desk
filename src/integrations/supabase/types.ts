@@ -181,7 +181,18 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      spares_items_for_sale: {
+        Row: { category: string | null; id: string | null; location: string | null; name: string | null; quantity: number | null; sku: string | null; unit_price: number | null }
+        Relationships: []
+      }
+      spares_my_sale_items: {
+        Row: { id: string | null; item_id: string | null; item_name: string | null; quantity: number | null; sale_id: string | null; unit_price: number | null }
+        Relationships: []
+      }
+      spares_my_sales: {
+        Row: { created_at: string | null; customer_name: string | null; id: string | null; payment_method: string | null; total: number | null }
+        Relationships: []
+      }
     }
     Functions: {
       spares_receive_stock: {

@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { emailToUsername } from "@/lib/username";
 import { ADMIN_ONLY, meQuery } from "@/lib/staff";
-import { BarChart3, ClipboardList, LayoutDashboard, Truck, LogOut, Package, Receipt, ShoppingCart, TrendingUp, Users, Wrench } from "lucide-react";
+import { BarChart3, ClipboardList, LayoutDashboard, ReceiptText, Truck, LogOut, Package, Receipt, ShoppingCart, TrendingUp, Users, Wrench } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async ({ context, location }) => {
@@ -21,7 +21,8 @@ export const Route = createFileRoute("/_authenticated")({
 const nav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, admin: true },
   { to: "/sell", label: "New sale", icon: ShoppingCart, admin: false },
-  { to: "/items", label: "Stock", icon: Package, admin: false },
+  { to: "/my-sales", label: "My sales", icon: ReceiptText, admin: false, cashierOnly: true },
+  { to: "/items", label: "Stock", icon: Package, admin: true },
   { to: "/purchases", label: "Purchases", icon: Truck, admin: true },
   { to: "/profit", label: "Profit & Loss", icon: TrendingUp, admin: true },
   { to: "/sales", label: "Sales", icon: ClipboardList, admin: true },
@@ -34,7 +35,7 @@ function AppLayout() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const { user, me } = Route.useRouteContext();
-  const links = nav.filter((n) => !n.admin || me?.role === "admin");
+  const links = nav.filter((n) => (n.admin ? me?.role === "admin" : !("cashierOnly" in n) || me?.role === "cashier"));
   const name = me?.full_name || me?.username || emailToUsername(user.email);
   async function logout() {
     await supabase.auth.signOut();

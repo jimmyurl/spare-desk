@@ -10,21 +10,21 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PageHeader } from "@/components/StatCard";
-import { itemsQuery, type Item } from "@/lib/queries";
+import { sellItemsQuery, type SellItem } from "@/lib/queries";
 import { formatTZS, PAYMENT_LABELS, PAYMENT_METHODS } from "@/lib/reports";
 
 export const Route = createFileRoute("/_authenticated/sell")({
   head: () => ({ meta: [{ title: "New sale — Spares Desk" }, { name: "description", content: "Record a counter sale." }] }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(itemsQuery),
+  loader: ({ context }) => context.queryClient.ensureQueryData(sellItemsQuery),
   component: Sell,
   errorComponent: ({ error }) => <div role="alert">{error.message}</div>,
 });
 
-type Line = { item: Item; quantity: number; price: number };
+type Line = { item: SellItem; quantity: number; price: number };
 
 function Sell() {
   const qc = useQueryClient();
-  const { data: items } = useSuspenseQuery(itemsQuery);
+  const { data: items } = useSuspenseQuery(sellItemsQuery);
   const [q, setQ] = useState("");
   const [cart, setCart] = useState<Line[]>([]);
   const [customer, setCustomer] = useState("");
@@ -38,7 +38,7 @@ function Sell() {
 
   const total = cart.reduce((s, l) => s + l.quantity * l.price, 0);
 
-  function add(item: Item) {
+  function add(item: SellItem) {
     setCart((c) => {
       const ex = c.find((l) => l.item.id === item.id);
       if (ex) return c.map((l) => (l === ex ? { ...l, quantity: l.quantity + 1 } : l));

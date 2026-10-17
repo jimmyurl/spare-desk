@@ -35,10 +35,11 @@ npm run dev
 ## Roles, expenses and profit & loss
 
 Run these in order in the Supabase SQL editor: `0001_sales_schema.sql`, the parts data,
-`0002_categories.sql`, `0003_roles_expenses.sql`, `0004_edit_sales.sql`, then `0005_purchases.sql`.
+`0002_categories.sql`, `0003_roles_expenses.sql`, `0004_edit_sales.sql`, `0005_purchases.sql`, then `0006_cashier_scope.sql`.
 
 * **Admin**: everything (sales, stock and prices, expenses, Profit & Loss, reports, users).
-* **Cashier**: record sales and look up stock only.
+* **Cashier**: record sales and see **only their own sales** (My sales). No Stock page, no buying prices, no
+  other cashiers' sales. This is enforced in the database, not just hidden in the menu.
 * **Sales** (admin): correct a wrong sale (customer, payment, date, parts, quantities, prices) or delete
   it. Stock is put back automatically and each change is saved in `spares_sale_audit`.
 * **Receive stock** (Stock page, admin): enter a whole supplier delivery at once. Each row is a part already
