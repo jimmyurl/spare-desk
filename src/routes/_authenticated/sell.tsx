@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PageHeader } from "@/components/StatCard";
 import { itemsQuery, type Item } from "@/lib/queries";
-import { formatKES, PAYMENT_LABELS, PAYMENT_METHODS } from "@/lib/reports";
+import { formatTZS, PAYMENT_LABELS, PAYMENT_METHODS } from "@/lib/reports";
 
 export const Route = createFileRoute("/_authenticated/sell")({
   head: () => ({ meta: [{ title: "New sale — Spares Desk" }, { name: "description", content: "Record a counter sale." }] }),
@@ -49,14 +49,14 @@ function Sell() {
 
   async function complete() {
     setBusy(true);
-    const { error } = await supabase.rpc("record_sale", {
+    const { error } = await supabase.rpc("spares_record_sale", {
       _customer: customer,
       _payment: payment,
       _lines: cart.map((l) => ({ item_id: l.item.id, quantity: l.quantity, unit_price: l.price })),
     });
     setBusy(false);
     if (error) return toast.error(error.message);
-    toast.success(`Sale recorded — ${formatKES(total)}`);
+    toast.success(`Sale recorded — ${formatTZS(total)}`);
     setCart([]);
     setCustomer("");
     qc.invalidateQueries();
@@ -83,7 +83,7 @@ function Sell() {
                     <div className="truncate font-medium">{i.name}</div>
                     <div className="num text-xs text-muted-foreground">{i.sku} · {i.quantity} in stock</div>
                   </div>
-                  <span className="num shrink-0">{formatKES(i.unit_price)}</span>
+                  <span className="num shrink-0">{formatTZS(i.unit_price)}</span>
                 </button>
               </li>
             ))}
@@ -130,7 +130,7 @@ function Sell() {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Total</span>
-              <span className="num text-2xl font-semibold">{formatKES(total)}</span>
+              <span className="num text-2xl font-semibold">{formatTZS(total)}</span>
             </div>
             <Button className="w-full" size="lg" disabled={!cart.length || busy} onClick={complete}>Complete sale</Button>
           </div>

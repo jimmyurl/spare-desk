@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PageHeader, StatCard } from "@/components/StatCard";
 import { daysAgo, endOfDay, salesQuery, startOfDay } from "@/lib/queries";
-import { byDay, byPayment, formatKES, PAYMENT_LABELS, summarize, topItems } from "@/lib/reports";
+import { byDay, byPayment, formatTZS, PAYMENT_LABELS, summarize, topItems } from "@/lib/reports";
 
 const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 const parse = (s: string) => {
@@ -48,7 +48,7 @@ function Reports() {
     for (const x of sales)
       for (const l of x.sale_items)
         rows.push([
-          new Date(x.created_at).toLocaleString("en-KE"), x.customer_name ?? "", PAYMENT_LABELS[x.payment_method] ?? x.payment_method,
+          new Date(x.created_at).toLocaleString("en-TZ"), x.customer_name ?? "", PAYMENT_LABELS[x.payment_method] ?? x.payment_method,
           l.item_name, String(l.quantity), String(l.unit_price), String(l.quantity * l.unit_price), String(l.quantity * (l.unit_price - l.cost_price)),
         ]);
     const csv = rows.map((r) => r.map((c) => `"${c.replace(/"/g, '""')}"`).join(",")).join("\n");
@@ -60,7 +60,7 @@ function Reports() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Reports" sub={`${fromD.toLocaleDateString("en-KE")} – ${toD.toLocaleDateString("en-KE")}`}>
+      <PageHeader title="Reports" sub={`${fromD.toLocaleDateString("en-TZ")} – ${toD.toLocaleDateString("en-TZ")}`}>
         <Button variant="outline" onClick={exportCsv} disabled={!sales.length}><Download className="size-4" /> Export</Button>
       </PageHeader>
 
@@ -78,10 +78,10 @@ function Reports() {
       </Card>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard label="Sales" value={formatKES(s.revenue)} />
-        <StatCard label="Profit" value={formatKES(s.profit)} sub={s.revenue ? `${Math.round((s.profit / s.revenue) * 100)}% margin` : undefined} />
+        <StatCard label="Sales" value={formatTZS(s.revenue)} />
+        <StatCard label="Profit" value={formatTZS(s.profit)} sub={s.revenue ? `${Math.round((s.profit / s.revenue) * 100)}% margin` : undefined} />
         <StatCard label="Transactions" value={s.count} sub={`${s.units} parts sold`} />
-        <StatCard label="Average sale" value={formatKES(s.average)} />
+        <StatCard label="Average sale" value={formatTZS(s.average)} />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -93,7 +93,7 @@ function Reports() {
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
                 <XAxis dataKey="date" tickFormatter={(d) => d.slice(5)} fontSize={11} stroke="var(--color-muted-foreground)" />
                 <YAxis fontSize={11} stroke="var(--color-muted-foreground)" tickFormatter={(v) => (v >= 1000 ? `${v / 1000}k` : v)} />
-                <Tooltip formatter={(v: number) => formatKES(v)} />
+                <Tooltip formatter={(v: number) => formatTZS(v)} />
                 <Bar dataKey="revenue" name="Sales" fill="var(--color-chart-1)" radius={[3, 3, 0, 0]} />
                 <Bar dataKey="profit" name="Profit" fill="var(--color-chart-2)" radius={[3, 3, 0, 0]} />
               </BarChart>
@@ -110,7 +110,7 @@ function Reports() {
                     <Pie data={pay} dataKey="total" nameKey="label" innerRadius={40} outerRadius={65}>
                       {pay.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                     </Pie>
-                    <Tooltip formatter={(v: number) => formatKES(v)} />
+                    <Tooltip formatter={(v: number) => formatTZS(v)} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -119,7 +119,7 @@ function Reports() {
                   <li key={p.method} className="flex items-center gap-2">
                     <span className="size-2.5 rounded-full" style={{ background: COLORS[i % COLORS.length] }} />
                     <span className="flex-1">{p.label}</span>
-                    <span className="num">{formatKES(p.total)}</span>
+                    <span className="num">{formatTZS(p.total)}</span>
                   </li>
                 ))}
               </ul>
@@ -134,7 +134,7 @@ function Reports() {
           <TableHeader><TableRow><TableHead>Part</TableHead><TableHead className="text-right">Qty</TableHead><TableHead className="text-right">Sales</TableHead><TableHead className="text-right">Profit</TableHead></TableRow></TableHeader>
           <TableBody>
             {top.map((t) => (
-              <TableRow key={t.name}><TableCell>{t.name}</TableCell><TableCell className="num text-right">{t.units}</TableCell><TableCell className="num text-right">{formatKES(t.revenue)}</TableCell><TableCell className="num text-right">{formatKES(t.profit)}</TableCell></TableRow>
+              <TableRow key={t.name}><TableCell>{t.name}</TableCell><TableCell className="num text-right">{t.units}</TableCell><TableCell className="num text-right">{formatTZS(t.revenue)}</TableCell><TableCell className="num text-right">{formatTZS(t.profit)}</TableCell></TableRow>
             ))}
           </TableBody>
         </Table>
@@ -147,11 +147,11 @@ function Reports() {
           <TableBody>
             {sales.map((x) => (
               <TableRow key={x.id}>
-                <TableCell className="num whitespace-nowrap text-xs">{new Date(x.created_at).toLocaleString("en-KE", { dateStyle: "short", timeStyle: "short" })}</TableCell>
+                <TableCell className="num whitespace-nowrap text-xs">{new Date(x.created_at).toLocaleString("en-TZ", { dateStyle: "short", timeStyle: "short" })}</TableCell>
                 <TableCell className="text-sm">{x.sale_items.map((l) => `${l.quantity}× ${l.item_name}`).join(", ")}{x.customer_name ? <span className="text-muted-foreground"> · {x.customer_name}</span> : null}</TableCell>
                 <TableCell>{PAYMENT_LABELS[x.payment_method]}</TableCell>
-                <TableCell className="num text-right">{formatKES(x.total)}</TableCell>
-                <TableCell className="num text-right">{formatKES(x.total - x.cost_total)}</TableCell>
+                <TableCell className="num text-right">{formatTZS(x.total)}</TableCell>
+                <TableCell className="num text-right">{formatTZS(x.total - x.cost_total)}</TableCell>
               </TableRow>
             ))}
           </TableBody>

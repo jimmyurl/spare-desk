@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PageHeader } from "@/components/StatCard";
 import { itemsQuery, type Item } from "@/lib/queries";
-import { formatKES, stockStatus } from "@/lib/reports";
+import { formatTZS, stockStatus } from "@/lib/reports";
 
 export const Route = createFileRoute("/_authenticated/items")({
   head: () => ({ meta: [{ title: "Stock — Spares Desk" }, { name: "description", content: "Manage parts, prices and stock levels." }] }),
@@ -42,7 +42,7 @@ function Items() {
 
   return (
     <div>
-      <PageHeader title="Stock" sub={`${items.length} parts · stock value ${formatKES(value)} at cost`}>
+      <PageHeader title="Stock" sub={`${items.length} parts · stock value ${formatTZS(value)} at cost`}>
         <Button onClick={() => setEditing({ name: "", quantity: 0, min_quantity: 5, unit_price: 0, cost_price: 0 })}>
           <Plus className="size-4" /> Add part
         </Button>
@@ -80,8 +80,8 @@ function Items() {
                     <TableCell className="text-right">
                       <Badge variant={st === "out" ? "destructive" : st === "low" ? "secondary" : "outline"} className="num">{i.quantity}</Badge>
                     </TableCell>
-                    <TableCell className="num text-right">{formatKES(i.cost_price)}</TableCell>
-                    <TableCell className="num text-right">{formatKES(i.unit_price)}</TableCell>
+                    <TableCell className="num text-right">{formatTZS(i.cost_price)}</TableCell>
+                    <TableCell className="num text-right">{formatTZS(i.unit_price)}</TableCell>
                   </TableRow>
                 );
               })}
@@ -113,7 +113,7 @@ function EditDialog({ draft, onClose }: { draft: Draft; onClose: () => void }) {
       cost_price: Number(d.cost_price ?? 0),
       updated_at: new Date().toISOString(),
     };
-    const { error } = d.id ? await supabase.from("items").update(payload).eq("id", d.id) : await supabase.from("items").insert(payload);
+    const { error } = d.id ? await supabase.from("spares_items").update(payload).eq("id", d.id) : await supabase.from("spares_items").insert(payload);
     if (error) return toast.error(error.message);
     toast.success("Saved");
     qc.invalidateQueries({ queryKey: ["items"] });
@@ -136,8 +136,8 @@ function EditDialog({ draft, onClose }: { draft: Draft; onClose: () => void }) {
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1"><Label>Code</Label><Input value={d.sku ?? ""} onChange={(e) => set("sku", e.target.value)} /></div>
             <div className="space-y-1"><Label>Shelf / location</Label><Input value={d.location ?? ""} onChange={(e) => set("location", e.target.value)} /></div>
-            {num("cost_price", "Buying price (KSh)")}
-            {num("unit_price", "Selling price (KSh)")}
+            {num("cost_price", "Buying price (TSh)")}
+            {num("unit_price", "Selling price (TSh)")}
             {num("quantity", "In stock")}
             {num("min_quantity", "Alert when at or below")}
           </div>

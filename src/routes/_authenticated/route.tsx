@@ -1,5 +1,6 @@
 import { createFileRoute, Link, Outlet, redirect, useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import { emailToUsername } from "@/lib/username";
 import { BarChart3, LayoutDashboard, LogOut, Package, ShoppingCart, Wrench } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated")({
@@ -40,7 +41,7 @@ function AppLayout() {
           ))}
         </nav>
         <div className="mt-auto hidden border-t border-sidebar-border p-4 md:block">
-          <div className="truncate text-xs text-sidebar-foreground/60">{user.email}</div>
+          <div className="truncate text-xs text-sidebar-foreground/60">{emailToUsername(user.email)}</div>
           <button
             onClick={async () => {
               await supabase.auth.signOut();

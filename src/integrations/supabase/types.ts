@@ -14,7 +14,7 @@ export type Database = {
   }
   public: {
     Tables: {
-      items: {
+      spares_items: {
         Row: {
           cost_price: number
           created_at: string
@@ -56,7 +56,7 @@ export type Database = {
         }
         Relationships: []
       }
-      sale_items: {
+      spares_sale_items: {
         Row: {
           cost_price: number
           created_at: string
@@ -89,22 +89,22 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "sale_items_item_id_fkey"
+            foreignKeyName: "spares_sale_items_item_id_fkey"
             columns: ["item_id"]
             isOneToOne: false
-            referencedRelation: "items"
+            referencedRelation: "spares_items"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "sale_items_sale_id_fkey"
+            foreignKeyName: "spares_sale_items_sale_id_fkey"
             columns: ["sale_id"]
             isOneToOne: false
-            referencedRelation: "sales"
+            referencedRelation: "spares_sales"
             referencedColumns: ["id"]
           },
         ]
       }
-      sales: {
+      spares_sales: {
         Row: {
           cost_total: number
           created_at: string
@@ -139,7 +139,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      record_sale: {
+      spares_record_sale: {
         Args: { _customer: string; _lines: Json; _payment: string }
         Returns: string
       }

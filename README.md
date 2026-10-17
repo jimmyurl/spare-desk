@@ -46,4 +46,3 @@ npm run dev
 It is a static site: upload `dist/` to Vercel, Netlify or Cloudflare Pages. Set
 `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` as environment variables
 on the host. SPA fallback rules are included (`vercel.json`, `public/_redirects`).
-# spare-desk

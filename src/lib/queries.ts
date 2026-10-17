@@ -17,7 +17,7 @@ export type Item = {
 export const itemsQuery = queryOptions({
   queryKey: ["items"],
   queryFn: async (): Promise<Item[]> => {
-    const { data, error } = await supabase.from("items").select("*").order("name");
+    const { data, error } = await supabase.from("spares_items").select("*").order("name");
     if (error) throw error;
     return data as Item[];
   },
@@ -28,8 +28,8 @@ export const salesQuery = (fromISO: string, toISO: string) =>
     queryKey: ["sales", fromISO, toISO],
     queryFn: async (): Promise<Sale[]> => {
       const { data, error } = await supabase
-        .from("sales")
-        .select("id, created_at, customer_name, payment_method, total, cost_total, sale_items(item_id, item_name, quantity, unit_price, cost_price)")
+        .from("spares_sales")
+        .select("id, created_at, customer_name, payment_method, total, cost_total, sale_items:spares_sale_items(item_id, item_name, quantity, unit_price, cost_price)")
         .gte("created_at", fromISO)
         .lte("created_at", toISO)
         .order("created_at", { ascending: false })

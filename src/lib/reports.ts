@@ -18,13 +18,13 @@ export type Sale = {
 export const PAYMENT_METHODS = ["cash", "mpesa", "card", "credit"] as const;
 export const PAYMENT_LABELS: Record<string, string> = {
   cash: "Cash",
-  mpesa: "M-Pesa",
+  mpesa: "Mobile money",
   card: "Card",
   credit: "Credit",
 };
 
-export function formatKES(n: number) {
-  return "KSh " + Math.round(n).toLocaleString("en-KE");
+export function formatTZS(n: number) {
+  return "TSh " + Math.round(n).toLocaleString("en-TZ");
 }
 
 export function summarize(sales: Sale[]) {

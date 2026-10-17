@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader, StatCard } from "@/components/StatCard";
 import { daysAgo, endOfDay, itemsQuery, salesQuery, startOfDay } from "@/lib/queries";
-import { byDay, formatKES, PAYMENT_LABELS, stockStatus, summarize, topItems } from "@/lib/reports";
+import { byDay, formatTZS, PAYMENT_LABELS, stockStatus, summarize, topItems } from "@/lib/reports";
 
 const from = daysAgo(29).toISOString();
 const to = endOfDay(new Date()).toISOString();
@@ -34,7 +34,7 @@ function Dashboard() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Dashboard" sub={today.toLocaleDateString("en-KE", { weekday: "long", day: "numeric", month: "long" })}>
+      <PageHeader title="Dashboard" sub={today.toLocaleDateString("en-TZ", { weekday: "long", day: "numeric", month: "long" })}>
         <Button asChild><Link to="/sell">Record a sale</Link></Button>
       </PageHeader>
 
@@ -46,9 +46,9 @@ function Dashboard() {
       )}
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard label="Sales today" value={formatKES(t.revenue)} sub={`${t.count} sales · ${t.units} parts`} icon={<Banknote className="size-4" />} />
-        <StatCard label="Profit today" value={formatKES(t.profit)} icon={<TrendingUp className="size-4" />} />
-        <StatCard label="Last 30 days" value={formatKES(m.revenue)} sub={`Profit ${formatKES(m.profit)}`} icon={<Receipt className="size-4" />} />
+        <StatCard label="Sales today" value={formatTZS(t.revenue)} sub={`${t.count} sales · ${t.units} parts`} icon={<Banknote className="size-4" />} />
+        <StatCard label="Profit today" value={formatTZS(t.profit)} icon={<TrendingUp className="size-4" />} />
+        <StatCard label="Last 30 days" value={formatTZS(m.revenue)} sub={`Profit ${formatTZS(m.profit)}`} icon={<Receipt className="size-4" />} />
         <StatCard label="Stock alerts" value={alerts.length} sub="low or out of stock" icon={<AlertTriangle className="size-4" />} />
       </div>
 
@@ -61,7 +61,7 @@ function Dashboard() {
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
                 <XAxis dataKey="date" tickFormatter={(d) => d.slice(8)} fontSize={11} stroke="var(--color-muted-foreground)" />
                 <YAxis fontSize={11} stroke="var(--color-muted-foreground)" tickFormatter={(v) => (v >= 1000 ? `${v / 1000}k` : v)} />
-                <Tooltip formatter={(v: number) => formatKES(v)} />
+                <Tooltip formatter={(v: number) => formatTZS(v)} />
                 <Area dataKey="revenue" name="Sales" stroke="var(--color-chart-1)" fill="var(--color-chart-1)" fillOpacity={0.2} strokeWidth={2} />
                 <Area dataKey="profit" name="Profit" stroke="var(--color-chart-3)" fill="var(--color-chart-3)" fillOpacity={0.15} strokeWidth={2} />
               </AreaChart>
@@ -78,7 +78,7 @@ function Dashboard() {
                 <li key={x.name} className="flex items-center gap-3 text-sm">
                   <span className="num w-5 text-muted-foreground">{i + 1}</span>
                   <span className="flex-1 truncate">{x.name}</span>
-                  <span className="num font-medium">{formatKES(x.revenue)}</span>
+                  <span className="num font-medium">{formatTZS(x.revenue)}</span>
                 </li>
               ))}
             </ul>
@@ -98,11 +98,11 @@ function Dashboard() {
                   <div className="min-w-0">
                     <div className="truncate">{s.sale_items.map((l) => `${l.quantity}× ${l.item_name}`).join(", ")}</div>
                     <div className="text-xs text-muted-foreground">
-                      {new Date(s.created_at).toLocaleString("en-KE", { dateStyle: "short", timeStyle: "short" })} · {PAYMENT_LABELS[s.payment_method]}
+                      {new Date(s.created_at).toLocaleString("en-TZ", { dateStyle: "short", timeStyle: "short" })} · {PAYMENT_LABELS[s.payment_method]}
                       {s.customer_name ? ` · ${s.customer_name}` : ""}
                     </div>
                   </div>
-                  <span className="num ml-3 font-medium">{formatKES(s.total)}</span>
+                  <span className="num ml-3 font-medium">{formatTZS(s.total)}</span>
                 </li>
               ))}
             </ul>
