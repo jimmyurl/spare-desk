@@ -35,10 +35,12 @@ npm run dev
 ## Roles, expenses and profit & loss
 
 Run these in order in the Supabase SQL editor: `0001_sales_schema.sql`, the parts data,
-`0002_categories.sql`, then `0003_roles_expenses.sql`.
+`0002_categories.sql`, `0003_roles_expenses.sql`, then `0004_edit_sales.sql`.
 
 * **Admin**: everything (sales, stock and prices, expenses, Profit & Loss, reports, users).
 * **Cashier**: record sales and look up stock only.
+* **Sales** (admin): correct a wrong sale (customer, payment, date, parts, quantities, prices) or delete
+  it. Stock is put back automatically and each change is saved in `spares_sale_audit`.
 * **Profit & Loss** = sales − cost of parts sold = gross profit, − expenses = net profit or loss.
   Record rent, salaries, transport etc. under **Expenses**.
 

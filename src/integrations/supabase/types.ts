@@ -172,6 +172,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      spares_delete_sale: {
+        Args: { _restock?: boolean; _sale: string }
+        Returns: undefined
+      }
+      spares_update_sale: {
+        Args: { _customer: string; _lines?: Json; _payment: string; _sale: string; _sold_at?: string }
+        Returns: undefined
+      }
       spares_me: {
         Args: Record<PropertyKey, never>
         Returns: Json

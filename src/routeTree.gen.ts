@@ -17,6 +17,7 @@ import { Route as AuthenticatedExpensesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedItemsRouteImport } from './routes/_authenticated/items'
 import { Route as AuthenticatedProfitRouteImport } from './routes/_authenticated/profit'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
+import { Route as AuthenticatedSalesRouteImport } from './routes/_authenticated/sales'
 import { Route as AuthenticatedSellRouteImport } from './routes/_authenticated/sell'
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
 
@@ -59,6 +60,11 @@ const AuthenticatedReportsRoute = AuthenticatedReportsRouteImport.update({
   path: '/reports',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSalesRoute = AuthenticatedSalesRouteImport.update({
+  id: '/sales',
+  path: '/sales',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedSellRoute = AuthenticatedSellRouteImport.update({
   id: '/sell',
   path: '/sell',
@@ -78,6 +84,7 @@ export interface FileRoutesByFullPath {
   '/items': typeof AuthenticatedItemsRoute
   '/profit': typeof AuthenticatedProfitRoute
   '/reports': typeof AuthenticatedReportsRoute
+  '/sales': typeof AuthenticatedSalesRoute
   '/sell': typeof AuthenticatedSellRoute
   '/users': typeof AuthenticatedUsersRoute
 }
@@ -89,6 +96,7 @@ export interface FileRoutesByTo {
   '/items': typeof AuthenticatedItemsRoute
   '/profit': typeof AuthenticatedProfitRoute
   '/reports': typeof AuthenticatedReportsRoute
+  '/sales': typeof AuthenticatedSalesRoute
   '/sell': typeof AuthenticatedSellRoute
   '/users': typeof AuthenticatedUsersRoute
 }
@@ -102,6 +110,7 @@ export interface FileRoutesById {
   '/_authenticated/items': typeof AuthenticatedItemsRoute
   '/_authenticated/profit': typeof AuthenticatedProfitRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
+  '/_authenticated/sales': typeof AuthenticatedSalesRoute
   '/_authenticated/sell': typeof AuthenticatedSellRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
 }
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/items'
     | '/profit'
     | '/reports'
+    | '/sales'
     | '/sell'
     | '/users'
   fileRoutesByTo: FileRoutesByTo
@@ -126,6 +136,7 @@ export interface FileRouteTypes {
     | '/items'
     | '/profit'
     | '/reports'
+    | '/sales'
     | '/sell'
     | '/users'
   id:
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
     | '/_authenticated/items'
     | '/_authenticated/profit'
     | '/_authenticated/reports'
+    | '/_authenticated/sales'
     | '/_authenticated/sell'
     | '/_authenticated/users'
   fileRoutesById: FileRoutesById
@@ -206,6 +218,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedReportsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/sales': {
+      id: '/_authenticated/sales'
+      path: '/sales'
+      fullPath: '/sales'
+      preLoaderRoute: typeof AuthenticatedSalesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/sell': {
       id: '/_authenticated/sell'
       path: '/sell'
@@ -229,6 +248,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedItemsRoute: typeof AuthenticatedItemsRoute
   AuthenticatedProfitRoute: typeof AuthenticatedProfitRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
+  AuthenticatedSalesRoute: typeof AuthenticatedSalesRoute
   AuthenticatedSellRoute: typeof AuthenticatedSellRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
 }
@@ -239,6 +259,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedItemsRoute: AuthenticatedItemsRoute,
   AuthenticatedProfitRoute: AuthenticatedProfitRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
+  AuthenticatedSalesRoute: AuthenticatedSalesRoute,
   AuthenticatedSellRoute: AuthenticatedSellRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
 }

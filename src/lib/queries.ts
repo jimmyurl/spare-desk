@@ -68,3 +68,22 @@ export const expensesQuery = (fromDate: string, toDate: string) =>
       return (data ?? []).map((e) => ({ ...e, amount: Number(e.amount) })) as Expense[];
     },
   });
+
+export type SaleRow = Sale & { edited_at: string | null };
+
+/** Sales list for the admin Sales page (includes the "edited" marker). */
+export const salesListQuery = (fromISO: string, toISO: string) =>
+  queryOptions({
+    queryKey: ["sales", "list", fromISO, toISO],
+    queryFn: async (): Promise<SaleRow[]> => {
+      const { data, error } = await supabase
+        .from("spares_sales")
+        .select("id, created_at, edited_at, customer_name, payment_method, total, cost_total, sale_items:spares_sale_items(item_id, item_name, quantity, unit_price, cost_price)")
+        .gte("created_at", fromISO)
+        .lte("created_at", toISO)
+        .order("created_at", { ascending: false })
+        .limit(2000);
+      if (error) throw error;
+      return data as unknown as SaleRow[];
+    },
+  });
