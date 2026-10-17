@@ -18,6 +18,7 @@ function AuthPage() {
   const qc = useQueryClient();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPw, setShowPw] = useState(false);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -75,7 +76,19 @@ function AuthPage() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="pw">Password</Label>
-            <Input id="pw" type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+            <div className="relative">
+              <Input id="pw" type={showPw ? "text" : "password"} className="pr-11" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+              <button
+                type="button"
+                onClick={() => setShowPw((v) => !v)}
+                aria-label={showPw ? "Hide password" : "Show password"}
+                aria-pressed={showPw}
+                title={showPw ? "Hide password" : "Show password"}
+                className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-xl leading-none"
+              >
+                {showPw ? "🐵" : "🙈"}
+              </button>
+            </div>
           </div>
           <Button type="submit" className="w-full" disabled={busy}>
             Sign in

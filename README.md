@@ -64,8 +64,15 @@ Set `VITE_USERNAME_DOMAIN` in `.env` (default `bkspares.com`) to the domain your
 | `npm run preview` | Preview the production build |
 | `npm test` | Run tests |
 
-## Deploying
+## Deploying (shared server)
 
-It is a static site: upload `dist/` to Vercel, Netlify or Cloudflare Pages. Set
-`VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` as environment variables
-on the host. SPA fallback rules are included (`vercel.json`, `public/_redirects`).
+The app uses hash routing (`/#/dashboard`) and relative asset paths, so it needs no server
+rewrite rules and works at the domain root or in a sub-folder.
+
+```sh
+npm run build
+```
+
+Upload the **contents** of `dist/` (including the `assets` folder) to the server, for example
+`public_html/spares/`, then open `https://yourdomain/spares/`. The Supabase URL and key are
+baked in at build time from `.env`, so build after changing it.
