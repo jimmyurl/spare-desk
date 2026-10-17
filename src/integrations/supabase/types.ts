@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      spares_expenses: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          expense_date: string
+          id: string
+        }
+        Insert: {
+          amount: number
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          expense_date?: string
+          id?: string
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          expense_date?: string
+          id?: string
+        }
+        Relationships: []
+      }
       spares_items: {
         Row: {
           category: string | null
@@ -142,6 +172,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      spares_me: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
       spares_record_sale: {
         Args: { _customer: string; _lines: Json; _payment: string }
         Returns: string

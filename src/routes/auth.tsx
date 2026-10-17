@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Wrench } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { USERNAME_PATTERN, normalizeUsername, usernameToEmail } from "@/lib/username";
 
 export const Route = createFileRoute("/auth")({
@@ -14,6 +15,7 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
+  const qc = useQueryClient();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -41,6 +43,7 @@ function AuthPage() {
     setBusy(true);
     const { error } = await supabase.auth.signInWithPassword({ email: usernameToEmail(name), password });
     setBusy(false);
+    if (!error) qc.clear();
     if (error) toast.error(error.message === "Invalid login credentials" ? "Wrong username or password." : error.message);
   }
 

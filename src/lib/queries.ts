@@ -1,6 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Sale } from "./reports";
+import type { Expense } from "./pnl";
 
 export type Item = {
   id: string;
@@ -51,3 +52,19 @@ export function daysAgo(n: number) {
   d.setDate(d.getDate() - n);
   return d;
 }
+
+export const expensesQuery = (fromDate: string, toDate: string) =>
+  queryOptions({
+    queryKey: ["expenses", fromDate, toDate],
+    queryFn: async (): Promise<Expense[]> => {
+      const { data, error } = await supabase
+        .from("spares_expenses")
+        .select("id, expense_date, category, description, amount")
+        .gte("expense_date", fromDate)
+        .lte("expense_date", toDate)
+        .order("expense_date", { ascending: false })
+        .limit(5000);
+      if (error) throw error;
+      return (data ?? []).map((e) => ({ ...e, amount: Number(e.amount) })) as Expense[];
+    },
+  });

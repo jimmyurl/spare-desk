@@ -28,6 +28,8 @@ export const Route = createFileRoute("/_authenticated/items")({
 type Draft = Partial<Item> & { name: string };
 
 function Items() {
+  const { me } = Route.useRouteContext();
+  const canEdit = me?.role === "admin";
   const { data: items } = useSuspenseQuery(itemsQuery);
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState<"all" | "low" | "unpriced">("all");
@@ -48,9 +50,11 @@ function Items() {
   return (
     <div>
       <PageHeader title="Stock" sub={`${items.length} parts · stock value ${formatTZS(value)} at cost`}>
-        <Button onClick={() => setEditing({ name: "", quantity: 0, min_quantity: 5, unit_price: 0, cost_price: 0 })}>
-          <Plus className="size-4" /> Add part
-        </Button>
+        {canEdit && (
+          <Button onClick={() => setEditing({ name: "", quantity: 0, min_quantity: 5, unit_price: 0, cost_price: 0 })}>
+            <Plus className="size-4" /> Add part
+          </Button>
+        )}
       </PageHeader>
       <Card className="p-4">
         <div className="mb-3 flex flex-wrap gap-2">
@@ -86,7 +90,7 @@ function Items() {
               {rows.map((i) => {
                 const st = stockStatus(i);
                 return (
-                  <TableRow key={i.id} className="cursor-pointer" onClick={() => setEditing(i)}>
+                  <TableRow key={i.id} className={canEdit ? "cursor-pointer" : ""} onClick={() => canEdit && setEditing(i)}>
                     <TableCell className="font-medium">{i.name}</TableCell>
                     <TableCell className="text-xs text-muted-foreground">{i.category ?? "Other Spares"}</TableCell>
                     <TableCell className="num text-xs text-muted-foreground">{i.sku}</TableCell>

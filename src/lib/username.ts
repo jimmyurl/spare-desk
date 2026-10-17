@@ -1,6 +1,6 @@
 // Supabase Auth identifies users by email. The spares app shows usernames instead and
-// maps them to a private, never-deliverable address (example.com is reserved by IANA).
-export const USERNAME_DOMAIN = "spares.example.com";
+// maps them to <username>@<domain>. Set VITE_USERNAME_DOMAIN in .env to change the domain.
+export const USERNAME_DOMAIN = (import.meta.env["VITE_USERNAME_DOMAIN"] as string | undefined) || "bkspares.com";
 
 export const USERNAME_PATTERN = /^[a-z0-9._-]{3,30}$/;
 

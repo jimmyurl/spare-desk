@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { USERNAME_PATTERN, emailToUsername, normalizeUsername, usernameToEmail } from "./username";
+import { USERNAME_DOMAIN, USERNAME_PATTERN, emailToUsername, normalizeUsername, usernameToEmail } from "./username";
 
 describe("username helpers", () => {
   it("maps usernames to the private email and back", () => {
-    expect(usernameToEmail("  Jimmy ")).toBe("jimmy@spares.example.com");
-    expect(emailToUsername("jimmy@spares.example.com")).toBe("jimmy");
+    expect(usernameToEmail("  Jimmy ")).toBe(`jimmy@${USERNAME_DOMAIN}`);
+    expect(emailToUsername(`jimmy@${USERNAME_DOMAIN}`)).toBe("jimmy");
     expect(emailToUsername("someone@other.com")).toBe("someone@other.com");
   });
   it("validates usernames", () => {

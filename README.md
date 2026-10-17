@@ -32,6 +32,29 @@ npm run dev
    `src/lib/username.ts`; example.com is reserved, so nothing is ever delivered to it.
 4. For local dev, add `http://localhost:5173/**` under Authentication → URL Configuration.
 
+## Roles, expenses and profit & loss
+
+Run these in order in the Supabase SQL editor: `0001_sales_schema.sql`, the parts data,
+`0002_categories.sql`, then `0003_roles_expenses.sql`.
+
+* **Admin**: everything (sales, stock and prices, expenses, Profit & Loss, reports, users).
+* **Cashier**: record sales and look up stock only.
+* **Profit & Loss** = sales − cost of parts sold = gross profit, − expenses = net profit or loss.
+  Record rent, salaries, transport etc. under **Expenses**.
+
+### User management (Edge Function)
+
+Creating logins needs the service-role key, which must never be in the browser, so it lives in a
+Supabase Edge Function. Deploy it once:
+
+1. Supabase → **Edge Functions → Deploy a new function → Via Editor**.
+2. Name it exactly `spares-users`, paste the contents of `supabase/functions/spares-users/index.ts`.
+3. Turn **off** "Verify JWT" (the function checks the caller itself), then **Deploy**.
+
+Or with the CLI: `supabase functions deploy spares-users --no-verify-jwt`.
+
+Set `VITE_USERNAME_DOMAIN` in `.env` (default `bkspares.com`) to the domain your staff logins use.
+
 ## Scripts
 
 | Command | What it does |
