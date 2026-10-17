@@ -44,6 +44,18 @@ export type Database = {
         }
         Relationships: []
       }
+      spares_purchase_items: {
+        Row: { id: string; item_id: string | null; item_name: string; purchase_id: string; quantity: number; unit_cost: number }
+        Insert: { id?: string; item_id?: string | null; item_name: string; purchase_id: string; quantity: number; unit_cost: number }
+        Update: { id?: string; item_id?: string | null; item_name?: string; purchase_id?: string; quantity?: number; unit_cost?: number }
+        Relationships: []
+      }
+      spares_purchases: {
+        Row: { created_at: string; created_by: string | null; id: string; purchase_date: string; reference: string | null; supplier: string | null; total_cost: number }
+        Insert: { created_at?: string; created_by?: string | null; id?: string; purchase_date?: string; reference?: string | null; supplier?: string | null; total_cost?: number }
+        Update: { created_at?: string; created_by?: string | null; id?: string; purchase_date?: string; reference?: string | null; supplier?: string | null; total_cost?: number }
+        Relationships: []
+      }
       spares_items: {
         Row: {
           category: string | null
@@ -172,6 +184,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      spares_receive_stock: {
+        Args: { _date: string; _lines: Json; _reference: string; _supplier: string }
+        Returns: string
+      }
       spares_delete_sale: {
         Args: { _restock?: boolean; _sale: string }
         Returns: undefined

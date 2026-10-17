@@ -15,7 +15,7 @@ export const meQuery = queryOptions({
 });
 
 /** Pages only admins may open. Cashiers are sent to the sales screen. */
-export const ADMIN_ONLY = ["/dashboard", "/sales", "/reports", "/profit", "/expenses", "/users"];
+export const ADMIN_ONLY = ["/dashboard", "/sales", "/purchases", "/reports", "/profit", "/expenses", "/users"];
 
 export type StaffUser = {
   user_id: string;

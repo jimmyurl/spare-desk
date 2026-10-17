@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { emailToUsername } from "@/lib/username";
 import { ADMIN_ONLY, meQuery } from "@/lib/staff";
-import { BarChart3, ClipboardList, LayoutDashboard, LogOut, Package, Receipt, ShoppingCart, TrendingUp, Users, Wrench } from "lucide-react";
+import { BarChart3, ClipboardList, LayoutDashboard, Truck, LogOut, Package, Receipt, ShoppingCart, TrendingUp, Users, Wrench } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async ({ context, location }) => {
@@ -22,6 +22,7 @@ const nav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, admin: true },
   { to: "/sell", label: "New sale", icon: ShoppingCart, admin: false },
   { to: "/items", label: "Stock", icon: Package, admin: false },
+  { to: "/purchases", label: "Purchases", icon: Truck, admin: true },
   { to: "/profit", label: "Profit & Loss", icon: TrendingUp, admin: true },
   { to: "/sales", label: "Sales", icon: ClipboardList, admin: true },
   { to: "/reports", label: "Sales reports", icon: BarChart3, admin: true },

@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { Plus, Search } from "lucide-react";
+import { PackagePlus, Search } from "lucide-react";
+import { ReceiveStockDialog } from "@/components/ReceiveStockDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -35,6 +36,7 @@ function Items() {
   const [filter, setFilter] = useState<"all" | "low" | "unpriced">("all");
   const [category, setCategory] = useState("");
   const [editing, setEditing] = useState<Draft | null>(null);
+  const [receiving, setReceiving] = useState(false);
 
   const rows = useMemo(() => {
     const s = q.toLowerCase();
@@ -51,8 +53,8 @@ function Items() {
     <div>
       <PageHeader title="Stock" sub={`${items.length} parts · stock value ${formatTZS(value)} at cost`}>
         {canEdit && (
-          <Button onClick={() => setEditing({ name: "", quantity: 0, min_quantity: 5, unit_price: 0, cost_price: 0 })}>
-            <Plus className="size-4" /> Add part
+          <Button onClick={() => setReceiving(true)}>
+            <PackagePlus className="size-4" /> Receive stock
           </Button>
         )}
       </PageHeader>
@@ -107,6 +109,7 @@ function Items() {
         </div>
       </Card>
       {editing && <EditDialog draft={editing} onClose={() => setEditing(null)} />}
+      {receiving && <ReceiveStockDialog items={items} onClose={() => setReceiving(false)} />}
     </div>
   );
 }

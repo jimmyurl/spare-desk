@@ -87,3 +87,29 @@ export const salesListQuery = (fromISO: string, toISO: string) =>
       return data as unknown as SaleRow[];
     },
   });
+
+export type Purchase = {
+  id: string;
+  purchase_date: string;
+  supplier: string | null;
+  reference: string | null;
+  total_cost: number;
+  purchase_items: { item_name: string; quantity: number; unit_cost: number }[];
+};
+
+export const purchasesQuery = (fromDate: string, toDate: string) =>
+  queryOptions({
+    queryKey: ["purchases", fromDate, toDate],
+    queryFn: async (): Promise<Purchase[]> => {
+      const { data, error } = await supabase
+        .from("spares_purchases")
+        .select("id, purchase_date, supplier, reference, total_cost, purchase_items:spares_purchase_items(item_name, quantity, unit_cost)")
+        .gte("purchase_date", fromDate)
+        .lte("purchase_date", toDate)
+        .order("purchase_date", { ascending: false })
+        .order("created_at", { ascending: false })
+        .limit(1000);
+      if (error) throw error;
+      return data as unknown as Purchase[];
+    },
+  });
